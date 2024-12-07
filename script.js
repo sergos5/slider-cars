@@ -1,5 +1,6 @@
 'use strict'
 
+const sliderBlock = document.querySelector('.container')
 const slides = document.querySelectorAll('.slide')
 
 const clearActivClasses = () => {
@@ -9,25 +10,46 @@ const clearActivClasses = () => {
 }
 
 
+
+
 // autoPlay - автопролистывание слайдов
-/* let count = 0
+let count = 0;
+let interval;
 
-let autoPlay = setInterval(()=> {
-    clearActivClasses();
-    slides[count].classList.add('active');
-    count++;
-    if (count>=slides.length) {
-        count = 0
-    };
-}, 3000)  */
+let autoPlay = () => {
+    interval = setInterval(()=> {
+        if (count>=slides.length) {
+            count = 0
+        };
+        clearActivClasses();
+        slides[count].classList.add('active');
+        count++;        
+    }, 2000)
+}
+
+sliderBlock.addEventListener('mouseenter', (e) => {
+    if (e.target.matches('.container')) {              
+        clearInterval(interval)
+    }
+}, true);
+
+sliderBlock.addEventListener('mouseleave', (e) => {
+    if (e.target.matches('.container')) {               
+        autoPlay()
+    }
+}, true);
 
 
-
-slides.forEach(slide => {
-    slide.addEventListener('click', () => {
-        clearActivClasses()
-        slide.classList.add('active')
+slides.forEach((slide, num) => {
+    slide.addEventListener('click', (e) => {
+        if (e.target.classList.contains('active')) {
+           clearActivClasses() 
+        } else {
+            clearActivClasses()
+            slide.classList.add('active')
+            count = num+1
+        }        
     })
 })
 
-
+autoPlay()
